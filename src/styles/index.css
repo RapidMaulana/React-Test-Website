@@ -1,11 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
-@theme {
+@theme extend {
   --color-primary: #007ea7;
   --color-secondary: #00a8e8;
   --color-tertiary: #003459;
+
+}
+
+body {
+  display: flex;
+  flex: 1;
+  margin: 0;
+  flex-direction: column;
 }
 
 :root {
@@ -17,15 +23,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+h1, p{
+  margin: 0;
 }
