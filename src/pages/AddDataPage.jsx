@@ -59,11 +59,9 @@ const AddData = () => {
     setLoading(true);
 
     try {
-      // Combine date and time into ISO format
       const dateTimeString = `${formData.transactionDate}T${formData.transactionTime}:00`;
       const transactionDateTime = new Date(dateTimeString).toISOString();
 
-      // Prepare data for POST request
       const postData = {
         productID: formData.productID,
         productName: formData.productName,
@@ -76,7 +74,6 @@ const AddData = () => {
 
       console.log("Posting data to API:", postData);
 
-      // POST data to the database using fetch
       const response = await fetch(`http://localhost:4000/api/transactions`, {
         method: "POST",
         headers: {
@@ -95,7 +92,6 @@ const AddData = () => {
 
       setSuccess(true);
 
-      // Reset form but keep current date/time
       const now = new Date();
       setFormData({
         productID: "",
@@ -108,12 +104,6 @@ const AddData = () => {
         createdBy: "",
       });
 
-      // Call onSuccess callback if provided
-      if (onSuccess) {
-        onSuccess(result.data);
-      }
-
-      // Hide success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
       setError(err.message || "Failed to create transaction");
@@ -128,17 +118,7 @@ const AddData = () => {
         Add New Transaction
       </h2>
 
-      {success && (
-        <div className="mb-4 bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg">
-          <p className="font-medium">✓ Transaction created successfully!</p>
-        </div>
-      )}
-
-      {error && (
-        <div className="mb-4 bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg">
-          <p className="font-medium">✗ Error: {error}</p>
-        </div>
-      )}
+      
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -289,6 +269,11 @@ const AddData = () => {
         </button>
       <Link to={"/"} className="flex justify-center w-full border-2 border-primary text-primary py-3 px-4 rounded-lg font-semibold hover:bg-primary hover:text-white transition ease-in"> Back to home page</Link>
       </form>
+      {success && (
+        <div className="mt-4 bg-primary text-white px-4 py-3 rounded-lg">
+          <p className="font-medium">Transaction created successfully!</p>
+        </div>
+      )}
     </div>
   );
 };
