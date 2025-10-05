@@ -1,17 +1,48 @@
 import { Link } from "react-router-dom";
-
-import data from "../data/viewData.json";
+import { useState, useEffect } from "react";
 
 const HomePage = () => {
-  const datas = data.data;
-  const totalDatas = datas.length;
+  const [datas, setDatas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchDatas() {
+      try {
+        const response = await fetch("http://localhost:4000/api/transactions");
+        const data = await response.json();
+
+        if (data.success) {
+          setDatas(data.data);
+        } else {
+          throw new Error("Failed to fetch data");
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchDatas();
+  }, []);
+
+  console.log(datas)
 
   return (
     <div className="m-5 flex flex-col items-start flex-1">
-      <h1 className="py-8 text-[48px] font-bold">
-        Showing total entries of {totalDatas} datas...
+      <h1 className="pt-8 text-[48px] font-bold">
+        Showing total entries of {datas.length} datas...
       </h1>
-        <table className="w-full border-separate border-spacing-0 rounded-xl overflow-hidden">
+      <Link
+        to={"/add-data"}
+        className={`${loading == true ? "hidden" : ""}bg-primary text-white p-3 my-8 text-xl font-semibold px-10 rounded-lg hover:bg-secondary transitions ease-in duration-100`}
+      >
+        Add Data
+      </Link>
+      {loading == true ? (
+        <h1>Please wait...</h1>
+      ) : (
+        <table className="w-full border-separate border-spacing-0 rounded-xl overflow-hidden transition ease-in delay-200 duration-200">
           <tr className="bg-tertiary text-white h-10 text-lg">
             <th>ID</th>
             <th>Product ID</th>
@@ -25,7 +56,12 @@ const HomePage = () => {
           </tr>
           {datas.map((key, i) => {
             return (
-              <tr key={i} className={`${i % 2 == 0 ? "bg-primary" : "bg-secondary"} text-white h-14 text-center text-lg`}>
+              <tr
+                key={i}
+                className={`${
+                  i % 2 == 0 ? "bg-primary" : "bg-secondary"
+                } text-white h-14 text-center text-lg`}
+              >
                 <td>{key.id}</td>
                 <td>{key.productID}</td>
                 <td>{key.productName}</td>
@@ -34,11 +70,34 @@ const HomePage = () => {
                 <td>{key.status == 0 ? "Success" : "Failed"}</td>
                 <td>{key.transactionDate}</td>
                 <td>{key.createBy}</td>
-                <td><Link to={`/detail/${key.id}`} className="flex justify-center hover:text-tertiary transitions ease-in-out duration-200"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-external-link-icon lucide-external-link"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></Link></td>
+                <td>
+                  <Link
+                    to={`/detail/${key.id}`}
+                    className="flex justify-center hover:text-tertiary transitions ease-in-out duration-200"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-external-link-icon lucide-external-link"
+                    >
+                      <path d="M15 3h6v6" />
+                      <path d="M10 14 21 3" />
+                      <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                    </svg>
+                  </Link>
+                </td>
               </tr>
             );
           })}
         </table>
+      )}
     </div>
   );
 };
