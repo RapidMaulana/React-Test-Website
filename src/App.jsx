@@ -14,7 +14,7 @@ function App() {
       <Routes>
         <Route path='/' element={<HomePage/>}/>
         <Route path='/detail/:id' element={<DetailPage/>}/>
-        <Route path='/edit/:id' element={<EditPage/>}/>
+        <Route path='/edit/:transactionId' element={<EditPage/>}/>
         <Route path='/add-data' element={<AddData/>}/>
       </Routes>
     </BrowserRouter>
